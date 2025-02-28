@@ -13,7 +13,7 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Visual Studio 16 2019"       
             cmake --build build
-            .\build\bin\test_translator.exe 
+            .\build\bin\test_polinom.exe 
     
   linux-build:
     runs-on: ubuntu-20.04
@@ -23,4 +23,4 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Unix Makefiles"       
             cmake --build build
-            ./build/bin/test_stack_and_queue
+            ./build/bin/test_polinom

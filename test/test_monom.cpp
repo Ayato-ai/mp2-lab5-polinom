@@ -1,5 +1,4 @@
 #include "polinom.h"
-
 #include <gtest.h>
 
 class Monom_Test : public ::testing::Test {
@@ -34,12 +33,6 @@ TEST_F(Monom_Test, can_monom_with_data) {
 };
 TEST_F(Monom_Test, can_monom_with_greater_degree) {
 	ASSERT_ANY_THROW(this->SetUp_new(1, 12, 3, 4));
-};
-TEST_F(Monom_Test, can_copy_monoms) {
-	this->SetUp_new(1, 2, 3, 4);
-	Monom monom_copy(*monom_1);
-
-	EXPECT_EQ(monom_1, monom_copy);
 };
 TEST_F(Monom_Test, monom_set_degree) {
 	this->SetUp();

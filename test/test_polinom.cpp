@@ -1,62 +1,17 @@
 #include "polinom.h"
 #include <gtest.h>
-enum types { number, operation, variable, nun };
-
-class Term {
-private:
-	types type;
-public:
-	Term(types type = nun) : type(type) {};
-	types get_type() const noexcept {
-		return type;
-	}
-};
-
-class Number : public Term {
-private:
-	int value;
-public:
-	Number(int value = 0) : value(value), Term(number) {};
-	int get_number() const noexcept {
-		return value;
-	};
-};
-
-class Operation : public Term {
-private:
-	char oper;
-public:
-	Operation(char oper = ' ') : oper(oper), Term(operation) {};
-	char get_operation() const noexcept {
-		return oper;
-	}
-};
-
-class Variable : public Term {
-private:
-	char var;
-public:
-	Variable(char var = ' ') : var(var), Term(variable) {};
-	char get_variable() const noexcept {
-		return var;
-	}
-};
-
-vector<Term*> sintax_analis(string str);
-
-bool analis(const vector<Term*> terms);
 
 class Polinom_Test : public ::testing::Test {
 protected:
+	void SetUp_void() {
+		;
+	}
 	void SetUp() {
 		polinom_1 = new Polynom();
-		polinom_2 = new Polynom();
-		polinom_3 = new Polynom();
 	}
 	void SetUp_new(string str) {
 		polinom_1 = new Polynom(sintax_analis(str));
 		polinom_2 = new Polynom();
-		polinom_3 = new Polynom();
 	}
 	void SetUp_three_new(string str_1, string str_2, string str_3) {
 		polinom_1 = new Polynom(sintax_analis(str_1));
@@ -65,13 +20,10 @@ protected:
 	}
 	void TearDown() {
 		delete polinom_1;
-		delete polinom_2;
-		delete polinom_3;
 	}
 	void TearDown_new() {
 		delete polinom_1;
 		delete polinom_2;
-		delete polinom_3;
 	}
 	void TearDown_three_new() {
 		delete polinom_1;
@@ -113,26 +65,57 @@ TEST_F(Polinom_Test, polinom_operator_multiplying) {
 
 	EXPECT_EQ(*this->polinom_1 * *this->polinom_2, *this->polinom_3);
 };
-/*
-TEST_F(Polinom_Test, throw_polinom_operator_multiplying) {
 
+TEST_F(Polinom_Test, throw_polinom_operator_multiplying) {
+	this->SetUp_three_new("5+xz^4", "-9-y^2-xz^7", "0");
+
+	ASSERT_ANY_THROW(*this->polinom_1 * *this->polinom_2);
 };
 TEST_F(Polinom_Test, polinom_operator_multiplying_on_const) {
+	this->SetUp_three_new("23+xz^2-5z", "69+3xz^2-15z", "5+z");
 
+	EXPECT_EQ(*this->polinom_1 * 3, *this->polinom_2);
 };
 TEST_F(Polinom_Test, polinom_operator_equal) {
+	this->SetUp_three_new("23+xz^2-5z", "23+xz^2-5z", "5+z");
 
+	EXPECT_EQ(*this->polinom_1 == *this->polinom_2, 1);
 };
 TEST_F(Polinom_Test, polinom_operator_not_equal) {
+	this->SetUp_three_new("23+xz^2-5z", "69+3xz^2-15z", "5+z");
 
+	EXPECT_EQ(*this->polinom_1 != *this->polinom_2, 1);
 };
 TEST_F(Polinom_Test, polinom_operator_asign) {
+	this->SetUp_new("9+2zx^3");
 
+	*this->polinom_2 = *this->polinom_1;
+
+	EXPECT_EQ(*this->polinom_1, *this->polinom_2);
 };
 TEST_F(Polinom_Test, polinom_operator_to_string) {
+	this->SetUp_new("2zx^3-9");
 
+	EXPECT_EQ(this->polinom_1->String(), "-9+2x^3z");
 };
 TEST_F(Polinom_Test, polinom_value_at_point) {
+	this->SetUp_new("2zx^3-9");
 
+	EXPECT_EQ(this->polinom_1->value_at_point(1, 2, 3), -3);
 };
-*/
+TEST_F(Polinom_Test, polinom_add_empty_polinom) {
+	this->SetUp_three_new("5+xz-xy^3", "0", "0");
+
+	EXPECT_EQ(*this->polinom_1 + *this->polinom_2 == *this->polinom_1, 1);
+}
+
+TEST_F(Polinom_Test, polinom_sintax_analis_correct) {
+	this->SetUp_void();
+
+	EXPECT_EQ(analis(sintax_analis("5+xz^4-56xy^5z^2+565z^7")), true);
+}
+TEST_F(Polinom_Test, polinom_sintax_analis_not_correct) {
+	this->SetUp_void();
+
+	EXPECT_EQ(analis(sintax_analis("5+xz^4-56x^4y^5z^2++565z^7")), false);
+}

@@ -147,6 +147,11 @@ class Polynom {
 private:
 	list<Monom> lists;
 public:
+
+	friend vector<Term*> sintax_analis(string str);
+
+	friend bool analis(const vector<Term*> terms);
+
 	Polynom() {
 		Monom head(0, 0, 0, 0);
 		lists.push_back(head);
@@ -421,9 +426,6 @@ public:
 		}
 		return result;
 	};
-	friend vector<Term*> sintax_analis(string str);
-
-	friend bool analis(const vector<Term*> terms);
 
 	~Polynom() {};
 };

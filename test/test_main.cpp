@@ -1,5 +1,5 @@
 
-#include <polinom.h>
+#include "polinom.h"
 #include "gtest.h"
 #include <iostream>
 

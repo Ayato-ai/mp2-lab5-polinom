@@ -10,6 +10,7 @@ const int MAX_DEG = 9;
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 using namespace std;
 enum types { number, operation, variable, nun };
 
@@ -143,15 +144,14 @@ public:
 	~Monom() {};
 };
 
+vector<Term*> sintax_analis(string str);
+
+bool analis(const vector<Term*> terms);
+
 class Polynom {
 private:
 	list<Monom> lists;
 public:
-
-	friend vector<Term*> sintax_analis(string str);
-
-	friend bool analis(const vector<Term*> terms);
-
 	Polynom() {
 		Monom head(0, 0, 0, 0);
 		lists.push_back(head);

@@ -139,19 +139,104 @@ public:
 	bool operator!=(const Monom& monom) const {
 		return !(*this == monom);
 	};
-
-
+	friend class Polynom;
+	
 	~Monom() {};
 };
 
-vector<Term*> sintax_analis(string str);
+inline bool analis(vector<Term*> terms) {
+	types pos = nun;
+	if (terms[0]->get_type() == number) {
+		pos = number;
+	}
+	if (terms[0]->get_type() == operation) {
+		if (((Operation*)terms[0])->get_operation() == '^')
+			return false;
+		pos = operation;
+	}
+	if (terms[0]->get_type() == variable) {
+		pos = variable;
+	}
+	if (terms[0])
+		for (int i = 1; i < terms.size(); i++) {
+			switch (terms[i]->get_type()) {
+			case number:
+				if (pos == number || pos == variable)
+					return false;
+				pos = number;
+				break;
+			case operation:
+				if (pos == operation)
+					return false;
+				if (((Operation*)terms[i])->get_operation() == '^')
+					if (pos != variable)
+						return false;
+				pos = operation;
+				break;
+			case variable:
+				if (pos == operation)
+					if (((Operation*)terms[i - 1])->get_operation() == '^')
+						return false;
+				pos = variable;
+				break;
+			default:
+				break;
+			}
+		}
+	if (terms[terms.size() - 1]->get_type() == operation)
+		return false;
+	return true;
+};
 
-bool analis(const vector<Term*> terms);
+inline vector<Term*> sintax_analis(string str) {
+	vector<Term*> terms;
+	int number_status = 0;
+	string n;
+	for (int i = 0; i < str.size(); i++) {
+		if (number_status == 0) {
+			if (str[i] == '+' || str[i] == '-' || str[i] == '^') {
+				terms.push_back(new Operation(str[i]));
+			}
+			else if (str[i] >= '0' && str[i] <= '9') {
+				number_status = 1;
+				n += str[i];
+			}
+			else if (str[i] == 'x' || str[i] == 'y' || str[i] == 'z') {
+				terms.push_back(new Variable(str[i]));
+			}
+		}
+		else {
+			if (str[i] >= '0' && str[i] <= '9') {
+				n += str[i];
+			}
+			else if (str[i] == '+' || str[i] == '-' || str[i] == '^') {
+				number_status = 0;
+				terms.push_back(new Number(stoi(n)));
+				terms.push_back(new Operation(str[i]));
+				n.clear();
+			}
+			else if (str[i] == 'x' || str[i] == 'y' || str[i] == 'z') {
+				number_status = 0;
+				terms.push_back(new Number(stoi(n)));
+				terms.push_back(new Variable(str[i]));
+				n.clear();
+			}
+		}
+	}
+	if (number_status) {
+		terms.push_back(new Number(stoi(n)));
+	}
+	return terms;
+};
 
 class Polynom {
 private:
 	list<Monom> lists;
 public:
+	friend vector<Term*> sintax_analis(string str);
+
+	friend bool analis(vector<Term*> terms);
+
 	Polynom() {
 		Monom head(0, 0, 0, 0);
 		lists.push_back(head);
@@ -235,6 +320,7 @@ public:
 		lists.push_back(next_);
 		sort_lists();
 	};
+
 	Polynom(Polynom& polynom) {
 		if (this != &polynom) {
 			lists.clear();

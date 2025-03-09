@@ -3,6 +3,9 @@
 
 class Polinom_Test : public ::testing::Test {
 protected:
+	void SetUp_void() {
+		;
+	}
 	void SetUp() {
 		polinom_1 = new Polynom();
 	}

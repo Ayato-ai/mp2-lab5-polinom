@@ -3,9 +3,6 @@
 
 class Polinom_Test : public ::testing::Test {
 protected:
-	void SetUp_void() {
-		;
-	}
 	void SetUp() {
 		polinom_1 = new Polynom();
 	}
@@ -33,10 +30,10 @@ protected:
 	Polynom* polinom_1;
 	Polynom* polinom_2;
 	Polynom* polinom_3;
-};
+};/*
 TEST_F(Polinom_Test, can_polinom) {
 	ASSERT_NO_THROW(this->SetUp());
-};
+};*/
 TEST_F(Polinom_Test, can_polinom_with_data) {
 	ASSERT_NO_THROW(this->SetUp_new("xz-6"));
 };

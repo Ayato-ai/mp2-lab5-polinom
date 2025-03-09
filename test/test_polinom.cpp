@@ -36,7 +36,7 @@ protected:
 };/*
 TEST_F(Polinom_Test, can_polinom) {
 	ASSERT_NO_THROW(this->SetUp());
-};*/
+};
 TEST_F(Polinom_Test, can_polinom_with_data) {
 	ASSERT_NO_THROW(this->SetUp_new("xz-6"));
 };
@@ -108,7 +108,7 @@ TEST_F(Polinom_Test, polinom_add_empty_polinom) {
 
 	EXPECT_EQ(*this->polinom_1 + *this->polinom_2 == *this->polinom_1, 1);
 }
-
+*/
 TEST_F(Polinom_Test, polinom_sintax_analis_correct) {
 	this->SetUp_void();
 

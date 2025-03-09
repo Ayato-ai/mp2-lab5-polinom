@@ -52,100 +52,81 @@ TYPED_TEST_P(My_List_Test, throw_can_create_list) {
 TYPED_TEST_P(My_List_Test, list_cirrect_get_size) {
 	this->SetUpNewList();
 
-	EXPECT_EQ((*list_1).get_size(), 2);
+	EXPECT_EQ((*this->list_1).get_size(), 2);
 }; 
 TYPED_TEST_P(My_List_Test, list_operator_bracket) {
 	this->SetUpNewList();
 
-	EXPECT_EQ((*list_1)[1], 2);
+	EXPECT_EQ((*this->list_1)[1], 2);
 };
 TYPED_TEST_P(My_List_Test, list_pop_back_correct_size) {
 	this->SetUpNewList();
 
-	(*list_1).pop_back();
+	(*this->list_1).pop_back();
 	//[1]
-	EXPECT_EQ((*list_1).get_size(), 1);
+	EXPECT_EQ((*this->list_1).get_size(), 1);
 };
 TYPED_TEST_P(My_List_Test, throw_list_pop_back_ancorrect_size) {
 	this->SetUpNewList();
 
-	(*list_1).pop_back();
-	(*list_1).pop_back();
+	(*this->list_1).pop_back();
+	(*this->list_1).pop_back();
 
-	ASSERT_ANY_THROW((*list_1).pop_back());
+	ASSERT_ANY_THROW((*this->list_1).pop_back());
 };
 TYPED_TEST_P(My_List_Test, list_pop_front_correct_size) {
 	this->SetUpNewList();
 
-	(*list_1).pop_front();
+	(*this->list_1).pop_front();
 	// [2]
-	EXPECT_EQ((*list_1).get_size(), 1);
+	EXPECT_EQ((*this->list_1).get_size(), 1);
 };
 TYPED_TEST_P(My_List_Test, throw_list_pop_front_ancorrect_size) {
 	this->SetUpNewList();
 
-	(*list_1).pop_front();
-	(*list_1).pop_front();
+	(*this->list_1).pop_front();
+	(*this->list_1).pop_front();
 
-	ASSERT_ANY_THROW((*list_1).pop_front());
+	ASSERT_ANY_THROW((*this->list_1).pop_front());
 };
 TYPED_TEST_P(My_List_Test, list_push_back_correct_size) {
 	this->SetUpNewList();
 
-	(*list_1).push_back(3);
+	(*this->list_1).push_back(3);
 	//[1]->[2]->[3]
-	EXPECT_EQ((*list_1).get_size(), 3);
+	EXPECT_EQ((*this->list_1).get_size(), 3);
 };
 TYPED_TEST_P(My_List_Test, list_push_front_correct_size) {
 	this->SetUpNewList();
 
-	(*list_1).push_front(3);
+	(*this->list_1).push_front(3);
 	//[3]->[1]->[2]
-	EXPECT_EQ((*list_1).get_size(), 3);
+	EXPECT_EQ((*this->list_1).get_size(), 3);
 };
 TYPED_TEST_P(My_List_Test, list_operator_assign) {
 	this->SetUp();
 
-	(*list_1) = (*list_2);
+	(*this->list_1) = (*this->list_2);
 
-	EXPECT_EQ((*list_1) == (*list_2), 1);
+	EXPECT_EQ((*this->list_1) == (*this->list_2), 1);
 };
 TYPED_TEST_P(My_List_Test, list_operator_equal) {
 	this->SetUp();
 
-	EXPECT_EQ((*list_1) == (*list_3), 1);
+	EXPECT_EQ((*this->list_1) == (*this->list_3), 1);
 };
 TYPED_TEST_P(My_List_Test, list_operator_not_equal) {
 	this->SetUp();
 
-	EXPECT_EQ((*list_1) != (*list_2), 1);
+	EXPECT_EQ((*this->list_1) != (*this->list_2), 1);
 };
 TYPED_TEST_P(My_List_Test, list_clear) {
 	this->SetUp();
 
-	(*list_1).clear();
+	(*this->list_1).clear();
 
-	EXPECT_EQ((*list_1).get_size(), 0);
-}
-
-
-
-/*
-TYPED_TEST_P(My_List_Test, throw_create_const_iterator) {
+	EXPECT_EQ((*this->list_1).get_size(), 0);
 };
-TYPED_TEST_P(My_List_Test, const_iterator_operator_increment) {
-};
-TYPED_TEST_P(My_List_Test, const_iterator_operator_assign) {
-};
-TYPED_TEST_P(My_List_Test, const_iterator_operator_equal) {
-};
-TYPED_TEST_P(My_List_Test, const_iterator_operator_not_equal) {
-};
-TYPED_TEST_P(My_List_Test, const_iterator_operator_dereference) {
-};
-TYPED_TEST_P(My_List_Test, const_iterator_change_pointer) {
-};
-*/
 
 REGISTER_TYPED_TEST_CASE_P(My_List_Test, throw_can_create_list, list_cirrect_get_size, list_operator_bracket, list_pop_back_correct_size, throw_list_pop_back_ancorrect_size,
 	list_pop_front_correct_size, throw_list_pop_front_ancorrect_size, list_push_back_correct_size, list_push_front_correct_size, list_operator_assign, list_operator_equal, list_operator_not_equal, list_clear);

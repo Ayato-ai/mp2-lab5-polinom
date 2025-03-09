@@ -536,12 +536,14 @@ public:
 			case number:
 				if (pos == operation)
 					if (((Operation*)terms[i - 1])->get_operation() == '^') {
-						if (((Variable*)terms[i - 2])->get_variable() == 'x')
-							x = ((Number*)terms[i])->get_number();
-						if (((Variable*)terms[i - 2])->get_variable() == 'y')
-							y = ((Number*)terms[i])->get_number();
-						if (((Variable*)terms[i - 2])->get_variable() == 'z')
-							z = ((Number*)terms[i])->get_number();
+						if (i > 1) {
+							if (((Variable*)terms[i - 2])->get_variable() == 'x')
+								x = ((Number*)terms[i])->get_number();
+							if (((Variable*)terms[i - 2])->get_variable() == 'y')
+								y = ((Number*)terms[i])->get_number();
+							if (((Variable*)terms[i - 2])->get_variable() == 'z')
+								z = ((Number*)terms[i])->get_number();
+						}
 					}
 					else
 						c = ((Number*)terms[i])->get_number();
@@ -752,6 +754,6 @@ public:
 	};
 
 	~Polynom() {
-		lists.~my_list();
+		lists.clear();
 	};
 };

@@ -274,7 +274,7 @@ public:
 				m_current = m_current->next;
 			return *this;
 		};
-		const_iterator& operator=(const_iterator& iter) {
+		const_iterator& operator=(const const_iterator& iter) {
 			if (*this != iter)
 				m_current = iter.m_current;
 			return *this;

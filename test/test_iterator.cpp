@@ -38,21 +38,21 @@ protected:
 
 TEST_F(Iterator_Test, throw_create_iterator) {
 	ASSERT_NO_THROW(this->SetUpOne());
-};
+}; 
 TEST_F(Iterator_Test, iterator_operator_increment) {
 	this->SetUp();
 
 	++(*iter_1);
 
-	EXPECT_NE((*iter_1).get_ptr(), list_1->begin());
-};
+	EXPECT_NE((*iter_1), (*list_1).begin());
+}; 
 TEST_F(Iterator_Test, iterator_operator_increment_value) {
 	this->SetUp();
 
 	++(*iter_1);
 
 	EXPECT_EQ(*(*iter_1), Monom(2, 1, 1, 2));
-}
+} 
 TEST_F(Iterator_Test, iterator_operator_assign) {
 	this->SetUp();
 
@@ -73,17 +73,18 @@ TEST_F(Iterator_Test, iterator_operator_not_equal) {
 	this->SetUp();
 
 	EXPECT_EQ((*iter_1) != (*iter_2), true);
-};
+}; 
 TEST_F(Iterator_Test, iterator_operator_dereference) {
 	this->SetUp();
 
 	EXPECT_EQ(*(*iter_1), Monom(1, 1, 1, 1));
 };
-TEST_F(Iterator_Test, iterator_change_pointer) {
+
+TEST_F(Iterator_Test, iterator_set_ptr) {
 	this->SetUp();
 
 	++(*iter_1);
-	(*iter_1).change(list_1->begin());
+	(*iter_1) = list_1->begin();
 
 	EXPECT_EQ(*(*iter_1), Monom(1, 1, 1, 1));
 };

@@ -1,7 +1,9 @@
 // ННГУ, ИИТММ, Курс "Алгоритмы и структуры данных"
 // 
 // Носков И.А.
-#pragma warning(disable : 4996)
+//#pragma warning(disable : 4996)
+
+#pragma once
 
 const int MAX_DEG = 9;
 
@@ -60,7 +62,7 @@ public:
 	node* next = nullptr;
 	Item data;
 
-	node(Item item, node* next = nullptr) : data(item), next(next) {};
+	node(const Item& item, node* next = nullptr) : data(item), next(next) {};
 
 };
 
@@ -88,7 +90,7 @@ public:
 	size_t get_size() const noexcept {
 		return sz;
 	}
-	Item& operator[](size_t index) {
+	Item& operator[](size_t index) const {
 		node<Item>* node_ = m_head;
 		for (size_t i = 0; i < index; i++)
 			node_ = node_->next;
@@ -114,6 +116,13 @@ public:
 	void pop_front() {
 		if (sz == 0)
 			throw ("list_is_empty");
+		if (sz == 1) {
+			delete m_head;
+			m_head = nullptr;
+			m_tail = nullptr;
+			sz = 0;
+			return;
+		}
 		node<Item>* new_node = m_head;
 		new_node = new_node->next;
 		delete m_head;
@@ -142,7 +151,7 @@ public:
 		}
 		sz++;
 	};
-	my_list<Item>& operator=(my_list<Item>& list) {
+	my_list<Item>& operator=(const my_list<Item>& list) {
 		if (this != &list) {
 			this->clear();
 
@@ -152,7 +161,7 @@ public:
 		}
 		return *this;
 	}
-	bool operator==(my_list<Item>& list) const {
+	bool operator==(const my_list<Item>& list) const {
 		if (sz != list.sz)
 			return false;
 		my_list<Item>::iterator iter_1(begin());
@@ -160,49 +169,31 @@ public:
 		for (size_t i = 0; i < sz; i++) {
 			if (*iter_1 != *iter_2)
 				return false;
+			++iter_1;
+			++iter_2;
 		}
 		return true;
 	};
-	bool operator!=(my_list<Item>& list) const {
+	bool operator!=(const my_list<Item>& list) const {
 		return !(*this == list);
 	};
 	void clear() {
-		if (sz != 0)
-			for (size_t i = 0; i < sz; i++)
-				delete std::exchange(m_head, m_head->next);
-
-		sz = 0;
-		m_tail = nullptr;
-		m_head = nullptr;
+		if (sz) {
+			while(m_head != nullptr)
+				pop_front();
+		}
 	};
-	friend std::ostream& operator<<(std::ostream& os, my_list<Item>& list) {
-		for (size_t i = 0; i < list.sz; i++)
-			os << list[i] << std::endl;
+	friend std::ostream& operator<<(std::ostream& os, const my_list<Item>& list) {
+		my_list<Item>::const_iterator iter_1(list.cbegin());
+		for (size_t i = 0; i < list.sz; i++) {
+			os << *iter_1 << std::endl;
+			++iter_1;
+		}
 		return os;
 	}
 	~my_list() {
 		clear();
 	}
-
-	node<Item>* begin() const {
-		if (m_head != nullptr)
-			return m_head;
-		else
-			throw ("m_head_list_is_null");
-	};
-	node<Item>* end() const noexcept {
-		return m_tail->next;
-	};
-
-	const node<Item>* cbegin() const  {
-		if (m_head != nullptr)
-			return m_head;
-		else
-			throw ("m_head_list_is_null");
-	};
-	const node<Item>* cend() const noexcept {
-		return m_tail->next;
-	};
 
 
 	class iterator {
@@ -214,6 +205,11 @@ public:
 
 		iterator() = default;
 		explicit iterator(node<Item>* ptr) : m_current(ptr) {};
+
+		iterator(iterator& iter) {
+			if (*this != iter)
+				this->m_current = iter.m_current;
+		};
 
 		iterator& operator++() {
 			m_current = m_current->next;
@@ -232,19 +228,19 @@ public:
 				m_current = iter.m_current;
 			return *this;
 		};
-		bool operator==(iterator& iter) const {
+		bool operator==(const iterator& iter) const {
 			if (m_current == iter.m_current)
 				return true;
 			else
 				return false;
 		};
-		bool operator!=(iterator& iter) const {
+		bool operator!=(const iterator& iter) const {
 			return !(*this == iter);
 		};
-		Item operator*() const {
+		Item& operator*() const {
 			return m_current->data;
 		};
-		iterator& change(node<Item>* ptr) {
+		iterator& set_ptr(node<Item>* ptr) {
 			m_current = ptr;
 			return *this;
 		};
@@ -261,6 +257,11 @@ public:
 
 		const_iterator() = default;
 		explicit const_iterator(const node<Item>* ptr) : m_current(ptr) {};
+
+		const_iterator(const_iterator& iter) {
+			if (*this != iter)
+				this->m_current = iter.m_current;
+		};
 		const_iterator& operator++() {
 			m_current = m_current->next;
 			return *this;
@@ -268,35 +269,60 @@ public:
 		const node<Item>* get_ptr() const {
 			return m_current;
 		};
-		iterator& operator++(int index) {
+		const_iterator& operator++(int index) {
 			for (size_t i = 0; i < index; i++)
 				m_current = m_current->next;
 			return *this;
 		};
-		iterator& operator=(const_iterator& iter) {
-			if (this != iter)
+		const_iterator& operator=(const_iterator& iter) {
+			if (*this != iter)
 				m_current = iter.m_current;
 			return *this;
 		};
-		bool operator==(const_iterator& iter) const {
+		bool operator==(const const_iterator& iter) const {
 			if (m_current == iter.m_current)
 				return true;
 			else
 				return false;
 		};
-		bool operator!=(const_iterator& iter) const {
+		bool operator!=(const const_iterator& iter) const {
 			return !(*this == iter);
 		};
-		Item operator*() const {
+		Item& operator*() const {
 			return m_current->data;
 		};
-		const_iterator& change(const node<Item>* ptr) {
+		const_iterator& set_ptr(const node<Item>* ptr) {
 			m_current = ptr;
 			return *this;
 		};
 		~const_iterator() {
 			m_current = nullptr;
 		};
+	};
+
+
+	iterator begin() const {
+		my_list<Item>::iterator iter_1(m_head);
+		if (m_head != nullptr)
+			return iter_1;
+		else
+			throw ("m_head_list_is_null");
+	};
+	iterator end() const noexcept {
+		my_list<Item>::iterator iter_1(m_tail->next);
+		return iter_1;
+	};
+
+	const_iterator cbegin() const {
+		my_list<Item>::const_iterator iter_1(m_head);
+		if (m_head != nullptr)
+			return iter_1;
+		else
+			throw ("m_head_list_is_null");
+	};
+	const_iterator cend() const noexcept {
+		my_list<Item>::const_iterator iter_1(m_tail->next);
+		return iter_1;
 	};
 
 };
@@ -577,7 +603,7 @@ public:
 
 			my_list<Monom>::iterator iterator_1(polynom.lists.begin());
 
-			while (iterator_1.get_ptr() != polynom.lists.end()) {
+			while (iterator_1 != polynom.lists.end()) {
 				Monom next(*iterator_1);
 				lists.push_back(next);
 				++iterator_1;
@@ -588,7 +614,7 @@ public:
 		vector<Monom> vector_monoms;
 		my_list<Monom>::iterator iterator_1(lists.begin());
 
-		while (iterator_1.get_ptr() != lists.end()) {
+		while (iterator_1 != lists.end()) {
 			vector_monoms.push_back(*iterator_1);
 			++iterator_1;
 		}
@@ -619,11 +645,11 @@ public:
 		my_list<Monom>::const_iterator iterator_1(lists.cbegin());
 		my_list<Monom>::const_iterator iterator_2(polynom.lists.cbegin());
 
-		while (iterator_1.get_ptr() != lists.cend()) {
+		while (iterator_1 != lists.cend()) {
 			result.lists.push_back(*iterator_1);
 			++iterator_1;
 		}
-		while (iterator_2.get_ptr() != polynom.lists.cend()) {
+		while (iterator_2 != polynom.lists.cend()) {
 			result.lists.push_back(*iterator_2);
 			++iterator_2;
 		}
@@ -637,12 +663,12 @@ public:
 		my_list<Monom>::const_iterator iterator_1(lists.cbegin());
 		my_list<Monom>::const_iterator iterator_2(polynom.lists.cbegin());
 
-		while (iterator_1.get_ptr() != lists.cend()) {
-			while (iterator_2.get_ptr() != polynom.lists.cend()) {
+		while (iterator_1 != lists.cend()) {
+			while (iterator_2 != polynom.lists.cend()) {
 				result.lists.push_back(*iterator_1 * *iterator_2);
 				++iterator_2;
 			}
-			iterator_2.change(polynom.lists.cbegin());
+			iterator_2 = polynom.lists.cbegin();
 			++iterator_1;
 		}
 
@@ -653,7 +679,7 @@ public:
 		Polynom result;
 		my_list<Monom>::const_iterator iterator_1(lists.cbegin());
 
-		while (iterator_1.get_ptr() != lists.cend()) {
+		while (iterator_1 != lists.cend()) {
 			result.lists.push_back(*iterator_1 * c);
 			++iterator_1;
 		}
@@ -665,7 +691,7 @@ public:
 			my_list<Monom>::const_iterator iterator_1(polynom.lists.cbegin());
 
 			lists.clear();
-			while (iterator_1.get_ptr() != polynom.lists.cend()) {
+			while (iterator_1 != polynom.lists.cend()) {
 				Monom next(*iterator_1);
 				lists.push_back(next);
 				++iterator_1;
@@ -674,28 +700,17 @@ public:
 		return *this;
 	};
 	bool operator==(const Polynom& polynom) const {
-		my_list<Monom>::const_iterator iterator_1(lists.cbegin());
-		my_list<Monom>::const_iterator iterator_2(polynom.lists.cbegin());
-
-		while (iterator_1.get_ptr() != lists.cend() || iterator_2.get_ptr() != polynom.lists.cend()) {
-			if (*iterator_1 != *iterator_2)
-				return false;
-			++iterator_1;
-			++iterator_2;
-		}
-		if (iterator_1.get_ptr() != lists.cend() && iterator_2.get_ptr() != polynom.lists.cend())
-			return false;
-		return true;
+		return (lists == polynom.lists);
 	};
 	bool operator!=(const Polynom& polynom) const {
 		return !(*this == polynom);
 	};
 	string String() const {
 		string result;
-		my_list<Monom>::const_iterator iterator_1(lists.begin());
+		my_list<Monom>::const_iterator iterator_1(lists.cbegin());
 
-		while (iterator_1.get_ptr() != lists.cend()) {
-			if (iterator_1.get_ptr() == lists.cbegin()) {
+		while (iterator_1 != lists.cend()) {
+			if (iterator_1 == lists.cbegin()) {
 				if ((iterator_1.get_ptr())->data.get_coef() == 1) {
 					if ((iterator_1.get_ptr())->data.get_degree() == 0)
 						result += '1';
@@ -746,7 +761,7 @@ public:
 		int result = 0;
 		my_list<Monom>::iterator iterator_1(lists.begin());
 
-		while (iterator_1.get_ptr() != lists.end()) {
+		while (iterator_1 != lists.end()) {
 			result += (iterator_1.get_ptr())->data.get_coef() * pow(x, iterator_1.get_ptr()->data.x_deg()) * pow(y, iterator_1.get_ptr()->data.y_deg()) * pow(z, iterator_1.get_ptr()->data.z_deg());
 			++iterator_1;
 		}

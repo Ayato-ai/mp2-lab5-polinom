@@ -301,26 +301,26 @@ public:
 	};
 
 
-	iterator begin() const {
+	iterator& begin() const {
 		my_list<Item>::iterator iter_1(m_head);
 		if (m_head != nullptr)
 			return iter_1;
 		else
 			throw ("m_head_list_is_null");
 	};
-	iterator end() const noexcept {
+	iterator& end() const noexcept {
 		my_list<Item>::iterator iter_1(m_tail->next);
 		return iter_1;
 	};
 
-	const_iterator cbegin() const {
+	const_iterator& cbegin() const {
 		my_list<Item>::const_iterator iter_1(m_head);
 		if (m_head != nullptr)
 			return iter_1;
 		else
 			throw ("m_head_list_is_null");
 	};
-	const_iterator cend() const noexcept {
+	const_iterator& cend() const noexcept {
 		my_list<Item>::const_iterator iter_1(m_tail->next);
 		return iter_1;
 	};

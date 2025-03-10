@@ -223,7 +223,7 @@ public:
 				m_current = m_current->next;
 			return *this;
 		};
-		iterator& operator=(iterator& iter) {
+		iterator& operator=(const iterator& iter) {
 			if (*this != iter)
 				m_current = iter.m_current;
 			return *this;

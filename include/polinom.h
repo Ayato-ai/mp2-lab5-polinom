@@ -288,7 +288,7 @@ public:
 		bool operator!=(const const_iterator& iter) const {
 			return !(*this == iter);
 		};
-		Item& operator*() const {
+		const Item& operator*() const {
 			return m_current->data;
 		};
 		const_iterator& set_ptr(const node<Item>* ptr) {
